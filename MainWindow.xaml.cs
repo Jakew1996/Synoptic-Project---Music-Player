@@ -53,6 +53,8 @@ namespace MusicApp
                 tracks.Add(new MusicTrack() { Name = track.Name, Artists = track.Artists, Album = track.Album, FileLocation = track.FileLocation });
                 listViewData.ItemsSource = tracks;
             }
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(listViewData.ItemsSource);
+            view.Filter = UserFilter;
         }
 
         private void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -78,10 +80,28 @@ namespace MusicApp
             timer.Start();
         }
 
+        void ListView_MouseDoubleClick(Object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                var baseobj = sender as FrameworkElement;
+                var musicTrack = baseobj.DataContext as MusicTrack;
+                mediaPlayer.Open(new Uri(musicTrack.FileLocation));
+
+                DispatcherTimer timer = new DispatcherTimer();
+                timer.Interval = TimeSpan.FromSeconds(1);
+                timer.Tick += timer_Tick;
+                timer.Start();
+                mediaPlayer.Play();
+            }
+
+        }
+
         void timer_Tick(object sender, EventArgs e)
         {
             if (mediaPlayer.Source != null)
-                lblStatus.Content = String.Format("{0} / {1}", mediaPlayer.Position.ToString(@"mm\:ss"), mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss"));
+                if (mediaPlayer.NaturalDuration.HasTimeSpan)
+                    lblStatus.Content = String.Format("{0} / {1}", mediaPlayer.Position.ToString(@"mm\:ss"), mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss"));
             else
                 lblStatus.Content = "No file selected...";
         }
@@ -99,6 +119,19 @@ namespace MusicApp
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             mediaPlayer.Stop();
+        }
+
+        private bool UserFilter(object item)
+        {
+            if (String.IsNullOrEmpty(txtFilter.Text))
+                return true;
+            else
+                return ((item as MusicTrack).Name.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
+        private void txtFilter_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            CollectionViewSource.GetDefaultView(listViewData.ItemsSource).Refresh();
         }
     }
 }
