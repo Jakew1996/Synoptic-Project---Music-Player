@@ -7,7 +7,7 @@ using System.IO;
 
 namespace MusicApp
 {
-    class MusicTrack
+    public class MusicTrack
     {
         public string Name { get; set; }
         public Array Artists { get; set; } //TODO: Make sure it shows multiple artists
