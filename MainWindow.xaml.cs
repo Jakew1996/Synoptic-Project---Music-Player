@@ -49,9 +49,20 @@ namespace MusicApp
                 });
                 listViewData.ItemsSource = tracks;
             }
+            CreateInitalPlaylist(tracks);
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(listViewData.ItemsSource);
             view.Filter = UserFilter;
-            mediaPlayer.MediaEnded += (sender, eventArgs) => NextSong();
+            mediaPlayer.MediaEnded += (sender, eventArgs) => NextSong(); //TODO: Why is this here?
+        }
+
+        void CreateInitalPlaylist(List<MusicTrack> Tracks)
+        {
+            Playlist playlist = new Playlist();
+            playlist.Name = "All Songs";
+            playlist.Tracks = Tracks;
+            Console.WriteLine(playlist);
+            //listViewPlaylists.ItemsSource = playlist;
+            //TODO: Push playlist into new list box and then create functionality to create new playlists
         }
 
         void AutoPlay()
@@ -85,6 +96,15 @@ namespace MusicApp
         void NextSong()
         {
             listViewData.SelectedIndex = listViewData.SelectedIndex + 1;
+            var file = listViewData.SelectedItem as MusicTrack;
+            mediaPlayer.Open(new Uri(file.FileLocation));
+            mediaPlayer.Play();
+            showSongTimer();
+        }
+
+        void PreviousSong()
+        {
+            listViewData.SelectedIndex = listViewData.SelectedIndex - 1;
             var file = listViewData.SelectedItem as MusicTrack;
             mediaPlayer.Open(new Uri(file.FileLocation));
             mediaPlayer.Play();
@@ -140,6 +160,11 @@ namespace MusicApp
                 
         }
 
+        private void btnPrevious_Click(object sender, RoutedEventArgs e)
+        {
+            PreviousSong();
+        }
+
         private void btnPlay_Click(object sender, RoutedEventArgs e)
         {
             mediaPlayer.Play();
@@ -183,5 +208,7 @@ namespace MusicApp
         {
 
         }
+
+        
     }
 }

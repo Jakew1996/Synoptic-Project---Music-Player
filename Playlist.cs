@@ -7,12 +7,13 @@ using System.IO;
 
 namespace MusicApp
 {
-    public class MusicTrack
+    public class Playlist
     {
         public string Name { get; set; }
-        public Array Artists { get; set; } //TODO: Make sure it shows multiple artists
-        public string Album { get; set; }
-        public string FileLocation { get; set; }
+        
+        public List<MusicTrack> Tracks { get; set; }
+
+        public string Created { get; set; }
 
     }
 }
