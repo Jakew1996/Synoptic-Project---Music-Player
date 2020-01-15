@@ -155,7 +155,7 @@ namespace MusicApp
             } 
             else
             {
-                lblStatus.Content = "No file selected...";
+                lblStatus.Content = "...";
             }
                 
         }
@@ -208,7 +208,5 @@ namespace MusicApp
         {
 
         }
-
-        
     }
 }
