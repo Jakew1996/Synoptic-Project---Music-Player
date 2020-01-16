@@ -1,21 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.IO;
-using System.Data.Linq;
 using System.Windows.Threading;
-using Microsoft.Win32;
 
 namespace MusicApp
 {
@@ -25,6 +17,7 @@ namespace MusicApp
     public partial class MainWindow : Window
     {
         private MediaPlayer mediaPlayer = new MediaPlayer();
+        private static Random rng = new Random();
 
         public MainWindow()
         {
@@ -40,29 +33,60 @@ namespace MusicApp
             foreach (string file in Directory.EnumerateFiles(folderPath, "*.mp3"))
             {
                 var tfile = TagLib.File.Create(file);
-                MusicTrack track = new MusicTrack();             
-                tracks.Add(new MusicTrack() {
-                    Name = tfile.Tag.Title, 
-                    Artists = tfile.Tag.Performers, 
-                    Album = tfile.Tag.Album, 
-                    FileLocation = file 
+                MusicTrack track = new MusicTrack();
+       
+                
+                tracks.Add(new MusicTrack()
+                {
+                    Name = tfile.Tag.Title,
+                    Artists = tfile.Tag.Performers.ElementAt(0),
+                    Album = tfile.Tag.Album,
+                    FileLocation = file
                 });
                 listViewData.ItemsSource = tracks;
             }
             CreateInitalPlaylist(tracks);
+
+
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(listViewData.ItemsSource);
+            PropertyGroupDescription groupDescription = new PropertyGroupDescription("Name");
             view.Filter = UserFilter;
+
+
             mediaPlayer.MediaEnded += (sender, eventArgs) => NextSong(); //TODO: Why is this here?
         }
 
         void CreateInitalPlaylist(List<MusicTrack> Tracks)
         {
-            Playlist playlist = new Playlist();
-            playlist.Name = "All Songs";
-            playlist.Tracks = Tracks;
-            Console.WriteLine(playlist);
-            //listViewPlaylists.ItemsSource = playlist;
-            //TODO: Push playlist into new list box and then create functionality to create new playlists
+            List<Playlist> playlist = new List<Playlist>();
+            playlist.Add(new Playlist()
+            {
+                Name = "All Songs",
+                Tracks = Tracks,
+            });
+            listViewPlaylists.ItemsSource = playlist;
+        }
+
+        void ListViewPlaylist_MouseDoubleClick(Object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+
+                MusicTrack track = new MusicTrack();
+                List<Playlist> playlist = new List<Playlist>();
+                //foreach (var item in listViewPlaylists.SelectedItem)
+                //{
+
+                //}
+
+                //listViewData.ItemsSource = selectedPlaylist;
+                //foreach (var item in List<selectedPlaylist>)
+                //{
+
+                //}
+                //listViewData.SelectedIndex = listViewData.SelectedIndex + 1;
+                //var file = listViewData.SelectedItem as MusicTrack;
+            }
         }
 
         void AutoPlay()
@@ -72,12 +96,6 @@ namespace MusicApp
             mediaPlayer.Open(new Uri(file.FileLocation));
             mediaPlayer.Play();
         }
-
-        void ShuffleTracks()
-        {
-            // Fix this
-        }
-
 
         private void btnPlayAll_Click(object sender, RoutedEventArgs e)
         {
@@ -91,6 +109,12 @@ namespace MusicApp
         private void btnSkip_Click(object sender, RoutedEventArgs e)
         {
             NextSong();
+        }
+
+        private void btnCreatePlaylist_Click(object sender, RoutedEventArgs e)
+        {
+            PlaylistModal modalWindow = new PlaylistModal();
+            modalWindow.ShowDialog();
         }
 
         void NextSong()
@@ -150,14 +174,14 @@ namespace MusicApp
                 {
                     var track = listViewData.SelectedItem as MusicTrack;
                     lblStatus.Content = String.Format("{0} - {1} / {2} : {3}", track.Name, track.Album, mediaPlayer.Position.ToString(@"mm\:ss"), mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss"));
-                    
-                } 
-            } 
+
+                }
+            }
             else
             {
                 lblStatus.Content = "...";
             }
-                
+
         }
 
         private void btnPrevious_Click(object sender, RoutedEventArgs e)
@@ -168,22 +192,29 @@ namespace MusicApp
         private void btnPlay_Click(object sender, RoutedEventArgs e)
         {
             mediaPlayer.Play();
-          
+
         }
 
-        private void btnPause_Click(object sender, RoutedEventArgs e)
+        private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             mediaPlayer.Pause();
         }
 
-        private void btnStop_Click(object sender, RoutedEventArgs e)
+        private void btnPause_Click(object sender, RoutedEventArgs e)
         {
             mediaPlayer.Stop();
         }
 
         private void btnShuffle_Click(object sender, RoutedEventArgs e)
         {
-            ShuffleTracks();
+            ShuffleMusic();
+        }
+
+        void ShuffleMusic()
+        {
+            List<MusicTrack> tracks = listViewData.ItemsSource.Cast<MusicTrack>().ToList();
+            var shuffledTracks = tracks.OrderBy(a => Guid.NewGuid()).ToList();
+            listViewData.ItemsSource = shuffledTracks;
         }
 
         private bool UserFilter(object item)
@@ -205,6 +236,11 @@ namespace MusicApp
         }
 
         private void listViewData_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void listViewPlaylists_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
         }

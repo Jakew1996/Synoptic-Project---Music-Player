@@ -6,14 +6,14 @@
         xmlns:local="clr-namespace:MusicApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="511" Width="999">
-    <Grid>
-        <TextBox Margin="425,0,0,420" Name="txtFilter" TextChanged="txtFilter_TextChanged" />
-        <ListView Margin="425,60,0,83" Name="listViewData" SelectionChanged="listViewData_SelectionChanged">
+    <Grid Background="#353b48">
+        <TextBox Margin="248,10,501,454" Name="txtFilter" TextChanged="txtFilter_TextChanged"/>
+        <ListView Margin="248,31,10,91" Name="listViewData" SelectionChanged="listViewData_SelectionChanged">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" Width="120" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Artist" Width="50" DisplayMemberBinding="{Binding Artist}" />
-                    <GridViewColumn Header="Album" Width="150" DisplayMemberBinding="{Binding Album}" />
+                    <GridViewColumn Header="Name" Width="225" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Artist" Width="225" DisplayMemberBinding="{Binding Artists}" />
+                    <GridViewColumn Header="Album" Width="225" DisplayMemberBinding="{Binding Album}" />
                 </GridView>
             </ListView.View>
             <ListView.ItemContainerStyle>
@@ -24,20 +24,25 @@
             </ListView.ItemContainerStyle>
         </ListView>
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="83" Margin="0,397,0,0" VerticalAlignment="Top" Width="991"/>
-        <Label Name="lblStatus" Content="Not playing..." HorizontalContentAlignment="Center" Margin="0,397,10,35" />
-        <Button x:Name="PlayButton" Click="btnPlay_Click" Content="Play" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="453,450,0,0"/>
-        <Button x:Name="StopButton" Click="btnPause_Click" Content="Stop" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="373,450,0,0"/>
-        <Button x:Name="PauseButton" Click="btnStop_Click" Content="Pause" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="533,450,0,0"/>
+        <Label Name="lblStatus" Content="Not playing..." HorizontalContentAlignment="Center" Margin="0,397,10,35" Foreground="#ffffff"/>
+        <Button x:Name="PlayButton" Click="btnPlay_Click" Content="Play" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="415,450,0,0"/>
+        <Button x:Name="PauseButton" Click="btnStop_Click" Content="Pause" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="495,450,0,0"/>
         <Button x:Name="PlayAllButton" Click="btnPlayAll_Click" Content="Play All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="826,450,0,0"/>
         <Button x:Name="ShuffleButton" Click="btnShuffle_Click" Content="Shuffle" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="906,450,0,0"/>
-        <Button x:Name="SkipButton" Click="btnSkip_Click" Content="Skip" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="613,450,0,0"/>
-        <Button x:Name="PreviousButton" Click="btnPrevious_Click" Content="Previous" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="293,450,0,0"/>
-        <ListView HorizontalAlignment="Left" Name="listViewPlaylists" Height="397" VerticalAlignment="Top" Width="233">
+        <Button x:Name="SkipButton" Click="btnSkip_Click" Content="Skip" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="575,450,0,0"/>
+        <Button x:Name="PreviousButton" Click="btnPrevious_Click" Content="Previous" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="335,450,0,0"/>
+        <ListView HorizontalAlignment="Left" Name="listViewPlaylists" Height="354" VerticalAlignment="Top" Width="233" Margin="10,10,0,0" SelectionChanged="listViewPlaylists_SelectionChanged">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" Width="120" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Playlist Name" Width="233" DisplayMemberBinding="{Binding Name}" />
                 </GridView>
             </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <EventSetter Event="MouseDoubleClick" Handler="ListViewPlaylist_MouseDoubleClick" />
+                </Style>
+            </ListView.ItemContainerStyle>
         </ListView>
+        <Button x:Name="CreatePlaylistButton" Click="btnCreatePlaylist_Click" Content="Create Playlist" HorizontalAlignment="Left" VerticalAlignment="Top" Width="233" Margin="10,369,0,0"/>
     </Grid>
 </Window>
