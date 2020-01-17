@@ -5,10 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="511" Width="999">
+        Title="MainWindow" Height="517" Width="999"
+        WindowStartupLocation="CenterScreen">
     <Grid Background="#353b48">
-        <TextBox Margin="248,10,501,454" Name="txtFilter" TextChanged="txtFilter_TextChanged"/>
-        <ListView Margin="248,31,10,91" Name="listViewData" SelectionChanged="listViewData_SelectionChanged">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35*"/>
+            <RowDefinition Height="61*"/>
+        </Grid.RowDefinitions>
+        <TextBox Margin="248,10,10,136" Name="txtFilter" TextChanged="txtFilter_TextChanged"/>
+        <ListView Margin="248,44,10,105" Name="listViewData" SelectionChanged="listViewData_SelectionChanged" Grid.RowSpan="2">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" Width="225" DisplayMemberBinding="{Binding Name}" />
@@ -23,15 +28,15 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="83" Margin="0,397,0,0" VerticalAlignment="Top" Width="991"/>
-        <Label Name="lblStatus" Content="Not playing..." HorizontalContentAlignment="Center" Margin="0,397,10,35" Foreground="#ffffff"/>
-        <Button x:Name="PlayButton" Click="btnPlay_Click" Content="Play" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="415,450,0,0"/>
-        <Button x:Name="PauseButton" Click="btnStop_Click" Content="Pause" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="495,450,0,0"/>
-        <Button x:Name="PlayAllButton" Click="btnPlayAll_Click" Content="Play All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="826,450,0,0"/>
-        <Button x:Name="ShuffleButton" Click="btnShuffle_Click" Content="Shuffle" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="906,450,0,0"/>
-        <Button x:Name="SkipButton" Click="btnSkip_Click" Content="Skip" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="575,450,0,0"/>
-        <Button x:Name="PreviousButton" Click="btnPrevious_Click" Content="Previous" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="335,450,0,0"/>
-        <ListView HorizontalAlignment="Left" Name="listViewPlaylists" Height="354" VerticalAlignment="Top" Width="233" Margin="10,10,0,0" SelectionChanged="listViewPlaylists_SelectionChanged">
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="100" Margin="10,205,0,0" VerticalAlignment="Top" Width="971" Grid.Row="1"/>
+        <Label Name="lblStatusSongArtist" Content="Not playing..." HorizontalContentAlignment="Center" Margin="0,205,10,66" Foreground="#ffffff" Grid.Row="1"/>
+        <Button x:Name="PlayButton" Click="btnPlay_Click" Content="Play" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="415,275,0,0" Grid.Row="1"/>
+        <Button x:Name="PauseButton" Click="btnStop_Click" Content="Pause" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="495,275,0,0" Grid.Row="1"/>
+        <Button x:Name="PlayAllButton" Click="btnPlayAll_Click" Content="Play All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="815,275,0,0" Grid.Row="1"/>
+        <Button x:Name="ShuffleButton" Click="btnShuffle_Click" Content="Shuffle" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="895,275,0,0" Grid.Row="1"/>
+        <Button x:Name="SkipButton" Click="btnSkip_Click" Content="Skip" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="575,275,0,0" Grid.Row="1"/>
+        <Button x:Name="PreviousButton" Click="btnPrevious_Click" Content="Previous" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="335,275,0,0" Grid.Row="1"/>
+        <ListView HorizontalAlignment="Left" Name="listViewPlaylists" Height="342" VerticalAlignment="Top" Width="233" Margin="10,10,0,0" SelectionChanged="listViewPlaylists_SelectionChanged" Grid.RowSpan="2">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Playlist Name" Width="233" DisplayMemberBinding="{Binding Name}" />
@@ -43,6 +48,7 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <Button x:Name="CreatePlaylistButton" Click="btnCreatePlaylist_Click" Content="Create Playlist" HorizontalAlignment="Left" VerticalAlignment="Top" Width="233" Margin="10,369,0,0"/>
+        <Button x:Name="CreatePlaylistButton" Click="btnCreatePlaylist_Click" Content="Create Playlist" HorizontalAlignment="Left" VerticalAlignment="Top" Width="233" Margin="10,180,0,0" Grid.Row="1"/>
+        <Label x:Name="lblStatus" Content="0:00" HorizontalContentAlignment="Center" Margin="0,239,10,35" Foreground="#ffffff" Grid.Row="1"/>
     </Grid>
 </Window>

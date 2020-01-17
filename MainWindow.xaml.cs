@@ -16,13 +16,50 @@ namespace MusicApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MediaPlayer mediaPlayer = new MediaPlayer();
-        private static Random rng = new Random();
+        public MediaPlayer mediaPlayer = new MediaPlayer();
 
         public MainWindow()
         {
             InitializeComponent();
             ReadFiles();
+
+
+            var timer = new DispatcherTimer
+            (
+            TimeSpan.FromSeconds(300), //TODO: Change this to 30 seconds
+            DispatcherPriority.ApplicationIdle,// Or DispatcherPriority.SystemIdle
+            (s, e) => { 
+                Idle();
+            }, // or something similar
+            Application.Current.Dispatcher
+            );
+        }
+
+        void Idle()
+        {
+            var darkwindow = new Window()
+            {
+                Background = Brushes.Black,
+                Opacity = 0.4,
+                AllowsTransparency = true,
+                WindowStyle = WindowStyle.None,
+                WindowState = WindowState.Maximized,
+                Topmost = true
+            };
+            darkwindow.Show();
+            string Idlemessage;
+
+            var track = listViewData.SelectedItem as MusicTrack;
+            if (track != null)
+            {
+                Idlemessage = String.Format("Now playing... {0} - {1}", track.Name, track.Album);
+            } 
+            else
+            {
+                Idlemessage = "...";
+            }
+            MessageBox.Show(Idlemessage);
+            darkwindow.Close();
         }
 
         public void ReadFiles()
@@ -34,8 +71,6 @@ namespace MusicApp
             {
                 var tfile = TagLib.File.Create(file);
                 MusicTrack track = new MusicTrack();
-       
-                
                 tracks.Add(new MusicTrack()
                 {
                     Name = tfile.Tag.Title,
@@ -46,13 +81,9 @@ namespace MusicApp
                 listViewData.ItemsSource = tracks;
             }
             CreateInitalPlaylist(tracks);
-
-
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(listViewData.ItemsSource);
             PropertyGroupDescription groupDescription = new PropertyGroupDescription("Name");
             view.Filter = UserFilter;
-
-
             mediaPlayer.MediaEnded += (sender, eventArgs) => NextSong(); //TODO: Why is this here?
         }
 
@@ -67,43 +98,35 @@ namespace MusicApp
             listViewPlaylists.ItemsSource = playlist;
         }
 
-        void ListViewPlaylist_MouseDoubleClick(Object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-
-                MusicTrack track = new MusicTrack();
-                List<Playlist> playlist = new List<Playlist>();
-                //foreach (var item in listViewPlaylists.SelectedItem)
-                //{
-
-                //}
-
-                //listViewData.ItemsSource = selectedPlaylist;
-                //foreach (var item in List<selectedPlaylist>)
-                //{
-
-                //}
-                //listViewData.SelectedIndex = listViewData.SelectedIndex + 1;
-                //var file = listViewData.SelectedItem as MusicTrack;
-            }
-        }
-
         void AutoPlay()
         {
-            listViewData.SelectedIndex = listViewData.SelectedIndex + 1;
-            var file = listViewData.SelectedItem as MusicTrack;
-            mediaPlayer.Open(new Uri(file.FileLocation));
-            mediaPlayer.Play();
-        }
-
-        private void btnPlayAll_Click(object sender, RoutedEventArgs e)
-        {
-            listViewData.SelectedIndex = 0;
+            if (listViewData.SelectedIndex != 0)
+            {
+                listViewData.SelectedIndex = listViewData.SelectedIndex + 1;
+            }
             var file = listViewData.SelectedItem as MusicTrack;
             mediaPlayer.Open(new Uri(file.FileLocation));
             mediaPlayer.Play();
             showSongTimer();
+        }
+
+        void PlayAll()
+        {
+            listViewData.SelectedIndex = 0;
+            AutoPlay();
+        }
+
+
+        void ListViewPlaylist_MouseDoubleClick(Object sender, MouseButtonEventArgs e)
+        {
+            
+        }
+
+        
+
+        private void btnPlayAll_Click(object sender, RoutedEventArgs e)
+        {
+            PlayAll();
         }
 
         private void btnSkip_Click(object sender, RoutedEventArgs e)
@@ -172,9 +195,11 @@ namespace MusicApp
             {
                 if (mediaPlayer.NaturalDuration.HasTimeSpan)
                 {
-                    var track = listViewData.SelectedItem as MusicTrack;
-                    lblStatus.Content = String.Format("{0} - {1} / {2} : {3}", track.Name, track.Album, mediaPlayer.Position.ToString(@"mm\:ss"), mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss"));
+                    IdleModal idleModal = new IdleModal();
 
+                    var track = listViewData.SelectedItem as MusicTrack;
+                    lblStatusSongArtist.Content = String.Format("{0} - {1}", track.Name, track.Album);
+                    lblStatus.Content = String.Format("{0} : {1}", mediaPlayer.Position.ToString(@"mm\:ss"), mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss"));
                 }
             }
             else

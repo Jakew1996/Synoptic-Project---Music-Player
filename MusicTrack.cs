@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MusicApp
+﻿namespace MusicApp
 {
     public class MusicTrack
     {

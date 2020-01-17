@@ -8,7 +8,7 @@
         Title="PlaylistModal" Height="180.953" Width="236.904">
     <Grid>
         <Label Content="New Playlist" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" Margin="48,76,0,0"/>
+        <TextBox Name="PlaylistName" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Margin="48,76,0,0"/>
         <Label Content="Playlist Name" HorizontalAlignment="Left" Margin="48,50,0,0" VerticalAlignment="Top"/>
         <Button Content="Create" Click="btnCreate_Click" HorizontalAlignment="Left" Margin="71,120,0,0" VerticalAlignment="Top" Width="75"/>
 

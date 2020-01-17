@@ -34,3 +34,5 @@ C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\MusicApp.exe
 C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\MusicApp.pdb
 C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\PlaylistModal.g.cs
 C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\PlaylistModal.baml
+C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\IdleModal.g.cs
+C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\IdleModal.baml
