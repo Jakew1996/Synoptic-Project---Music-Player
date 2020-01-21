@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace MusicApp
@@ -20,35 +22,42 @@ namespace MusicApp
         private void btnCreate_Click(object sender, RoutedEventArgs e)
         {
 
-            createPlaylist();
+            CreatePlaylist();
             
             this.Close();
         }
 
-        void createPlaylist()
+        void CreatePlaylist()
         {
             MainWindow mainWindow = new MainWindow();
-            List<Playlist> playlist = new List<Playlist>();
-            //List<Playlist> currentPlaylists = new List<Playlist>();
-
-            playlist.Add(new Playlist()
+            //mainWindow.AddPlaylist();
+            mainWindow.Playlists.Add(new Playlist()
             {
                 Name = PlaylistName.Text,
                 Tracks = { },
             });
+            Console.WriteLine(PlaylistName.Text);
+            mainWindow.listViewPlaylists.DataContext = mainWindow.Playlists;
 
-            List<Playlist> currentPlaylists = mainWindow.listViewPlaylists.ItemsSource.Cast<Playlist>().ToList();
+            //List<Playlist> playlist = new List<Playlist>();
 
-            var newList = playlist.Concat(currentPlaylists);
+            //playlist.Add(new Playlist()
+            //{
+            //  Name = PlaylistName.Text,
+            //Tracks = { },
+            //});
+
+            //mainWindow.Playlists.Add((Playlist)mainWindow.listViewPlaylists.SelectedItem);
+
+            //List<Playlist> currentPlaylists = new List<Playlist>();
 
 
+            //List<Playlist> currentPlaylists = mainWindow.listViewPlaylists.ItemsSource.Cast<Playlist>().ToList();
 
-            mainWindow.listViewPlaylists.ItemsSource = null;
-            mainWindow.listViewPlaylists.ItemsSource = newList;
+            //var newList = playlist.Concat(currentPlaylists);
 
-            System.ComponentModel.ICollectionView view = CollectionViewSource.GetDefaultView(mainWindow.listViewPlaylists.ItemsSource);
-            view.Refresh();
-
+            //mainWindow.listViewPlaylists.ItemsSource = newList;
+            //mainWindow.listViewPlaylists.Items.Add(new Playlist { Name = "PlaylistName.Text" });
         }
     }
 }

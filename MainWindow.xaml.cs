@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -17,11 +18,13 @@ namespace MusicApp
     public partial class MainWindow : Window
     {
         public MediaPlayer mediaPlayer = new MediaPlayer();
+        public ObservableCollection<Playlist> Playlists { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
             ReadFiles();
+
 
 
             var timer = new DispatcherTimer
@@ -34,6 +37,99 @@ namespace MusicApp
             Application.Current.Dispatcher
             );
         }
+
+        public void ReadFiles()
+        {
+
+            string folderPath = "C:\\Users\\Public\\Music"; //TODO: Store this variable somewhere else
+
+            List<MusicTrack> tracks = new List<MusicTrack>();
+
+            foreach (string file in Directory.EnumerateFiles(folderPath, "*.mp3"))
+            {
+                var tfile = TagLib.File.Create(file);
+                MusicTrack track = new MusicTrack();
+                tracks.Add(new MusicTrack()
+                {
+                    Name = tfile.Tag.Title,
+                    Artists = tfile.Tag.Performers.ElementAt(0),
+                    Album = tfile.Tag.Album,
+                    FileLocation = file
+                });
+                
+            }
+
+            
+            //listViewData.ItemsSource = tracks;
+            CreateInitalPlaylist(tracks);
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(listViewData.ItemsSource);
+            //PropertyGroupDescription groupDescription = new PropertyGroupDescription("Name");
+            //view.Filter = UserFilter;
+            mediaPlayer.MediaEnded += (sender, eventArgs) => NextSong(); //TODO: Why is this here?
+        }
+
+        void CreateInitalPlaylist(List<MusicTrack> Tracks)
+        {
+            ObservableCollection<Playlist> playlist = new ObservableCollection<Playlist>();
+            playlist.Add(new Playlist()
+            {
+                Name = "All Songs",
+                Tracks = Tracks,
+            });
+            Playlists = playlist;
+            listViewPlaylists.DataContext = this;
+
+
+
+            //List<Playlist> playlist = new List<Playlist>();
+            //listViewPlaylists.ItemsSource = playlist;
+        }
+
+        public void AddPlaylist()
+        {
+            PlaylistModal playlistModal = new PlaylistModal();
+            Playlists.Add(new Playlist()
+            {
+                //Name = playlistModal.PlaylistName.Text,
+                Name = NewPlaylistName.Text,
+                Tracks = { },
+            });
+            Console.WriteLine(playlistModal.PlaylistName.Text);
+            listViewPlaylists.DataContext = this;
+        }
+
+
+
+
+
+
+        private void ListViewPlaylist_ItemClick(object sender, MouseButtonEventArgs e)
+        {
+            Console.WriteLine(e);
+            Console.WriteLine(sender);
+            //var SelectedItem = sender.Content.tracks; //TODO: Fix this
+            List<MusicTrack> tracks = new List<MusicTrack>();
+            foreach (var item in SelectedItem.Tracks)
+            {
+
+                //var tfile = TagLib.File.Create(file);
+                MusicTrack track = new MusicTrack();
+                tracks.Add(new MusicTrack()
+                {
+                    Name = item.Name,
+                    Artists = item.Artists,
+                    Album = item.Album,
+                    FileLocation = item.FileLocation
+                });
+
+            }
+                listViewData.ItemsSource = tracks;
+        }
+
+
+
+
+
 
         void Idle()
         {
@@ -53,51 +149,13 @@ namespace MusicApp
             if (track != null)
             {
                 Idlemessage = String.Format("Now playing... {0} - {1}", track.Name, track.Album);
-            } 
+            }
             else
             {
                 Idlemessage = "...";
             }
             MessageBox.Show(Idlemessage);
             darkwindow.Close();
-        }
-
-        public void ReadFiles()
-        {
-            string folderPath = "C:\\Users\\Public\\Music"; //TODO: Store this variable somewhere else
-
-            List<MusicTrack> tracks = new List<MusicTrack>();
-
-            foreach (string file in Directory.EnumerateFiles(folderPath, "*.mp3"))
-            {
-                var tfile = TagLib.File.Create(file);
-                MusicTrack track = new MusicTrack();
-                tracks.Add(new MusicTrack()
-                {
-                    Name = tfile.Tag.Title,
-                    Artists = tfile.Tag.Performers.ElementAt(0),
-                    Album = tfile.Tag.Album,
-                    FileLocation = file
-                });
-                
-            }
-            listViewData.ItemsSource = tracks;
-            CreateInitalPlaylist(tracks);
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(listViewData.ItemsSource);
-            PropertyGroupDescription groupDescription = new PropertyGroupDescription("Name");
-            view.Filter = UserFilter;
-            mediaPlayer.MediaEnded += (sender, eventArgs) => NextSong(); //TODO: Why is this here?
-        }
-
-        void CreateInitalPlaylist(List<MusicTrack> Tracks)
-        {
-            List<Playlist> playlist = new List<Playlist>();
-            playlist.Add(new Playlist()
-            {
-                Name = "All Songs",
-                Tracks = Tracks,
-            });
-            listViewPlaylists.ItemsSource = playlist;
         }
 
         void AutoPlay()
@@ -218,8 +276,7 @@ namespace MusicApp
 
         private void btnCreatePlaylist_Click(object sender, RoutedEventArgs e)
         {
-            PlaylistModal modalWindow = new PlaylistModal();
-            modalWindow.ShowDialog();
+            AddPlaylist();
         }
 
         private void ListViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -273,6 +330,16 @@ namespace MusicApp
         }
 
         private void listViewPlaylists_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void NewPlaylistName_TextChanged(object sender, TextChangedEventArgs e)
         {
 
         }
