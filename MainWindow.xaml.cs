@@ -65,6 +65,7 @@ namespace MusicApp
         public void ReadFiles()
         {
             string folderPath = "C:\\Users\\Public\\Music"; //TODO: Store this variable somewhere else
+
             List<MusicTrack> tracks = new List<MusicTrack>();
 
             foreach (string file in Directory.EnumerateFiles(folderPath, "*.mp3"))
@@ -78,8 +79,9 @@ namespace MusicApp
                     Album = tfile.Tag.Album,
                     FileLocation = file
                 });
-                listViewData.ItemsSource = tracks;
+                
             }
+            listViewData.ItemsSource = tracks;
             CreateInitalPlaylist(tracks);
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(listViewData.ItemsSource);
             PropertyGroupDescription groupDescription = new PropertyGroupDescription("Name");
@@ -116,30 +118,6 @@ namespace MusicApp
             AutoPlay();
         }
 
-
-        void ListViewPlaylist_MouseDoubleClick(Object sender, MouseButtonEventArgs e)
-        {
-            
-        }
-
-        
-
-        private void btnPlayAll_Click(object sender, RoutedEventArgs e)
-        {
-            PlayAll();
-        }
-
-        private void btnSkip_Click(object sender, RoutedEventArgs e)
-        {
-            NextSong();
-        }
-
-        private void btnCreatePlaylist_Click(object sender, RoutedEventArgs e)
-        {
-            PlaylistModal modalWindow = new PlaylistModal();
-            modalWindow.ShowDialog();
-        }
-
         void NextSong()
         {
             listViewData.SelectedIndex = listViewData.SelectedIndex + 1;
@@ -164,7 +142,6 @@ namespace MusicApp
             var musicTrack = baseobj.DataContext as MusicTrack;
             mediaPlayer.Open(new Uri(musicTrack.FileLocation));
             showSongTimer();
-
         }
 
         void showSongTimer()
@@ -175,20 +152,7 @@ namespace MusicApp
             timer.Start();
         }
 
-        private void ListViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            prepareSong(sender, e);
-        }
-
-        void ListView_MouseDoubleClick(Object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                prepareSong(sender, e);
-                mediaPlayer.Play();
-            }
-        }
-
+        
         void timer_Tick(object sender, EventArgs e)
         {
             if (mediaPlayer.Source != null)
@@ -196,7 +160,6 @@ namespace MusicApp
                 if (mediaPlayer.NaturalDuration.HasTimeSpan)
                 {
                     IdleModal idleModal = new IdleModal();
-
                     var track = listViewData.SelectedItem as MusicTrack;
                     lblStatusSongArtist.Content = String.Format("{0} - {1}", track.Name, track.Album);
                     lblStatus.Content = String.Format("{0} : {1}", mediaPlayer.Position.ToString(@"mm\:ss"), mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss"));
@@ -208,31 +171,9 @@ namespace MusicApp
             }
 
         }
-
-        private void btnPrevious_Click(object sender, RoutedEventArgs e)
+        private void txtFilter_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            PreviousSong();
-        }
-
-        private void btnPlay_Click(object sender, RoutedEventArgs e)
-        {
-            mediaPlayer.Play();
-
-        }
-
-        private void btnStop_Click(object sender, RoutedEventArgs e)
-        {
-            mediaPlayer.Pause();
-        }
-
-        private void btnPause_Click(object sender, RoutedEventArgs e)
-        {
-            mediaPlayer.Stop();
-        }
-
-        private void btnShuffle_Click(object sender, RoutedEventArgs e)
-        {
-            ShuffleMusic();
+            CollectionViewSource.GetDefaultView(listViewData.ItemsSource).Refresh();
         }
 
         void ShuffleMusic()
@@ -250,9 +191,75 @@ namespace MusicApp
                 return ((item as MusicTrack).Name.IndexOf(txtFilter.Text, StringComparison.OrdinalIgnoreCase) >= 0);
         }
 
-        private void txtFilter_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+
+
+
+
+
+
+
+
+
+
+        void ListViewPlaylist_MouseDoubleClick(Object sender, MouseButtonEventArgs e)
         {
-            CollectionViewSource.GetDefaultView(listViewData.ItemsSource).Refresh();
+
+        }
+
+        private void btnPlayAll_Click(object sender, RoutedEventArgs e)
+        {
+            PlayAll();
+        }
+
+        private void btnSkip_Click(object sender, RoutedEventArgs e)
+        {
+            NextSong();
+        }
+
+        private void btnCreatePlaylist_Click(object sender, RoutedEventArgs e)
+        {
+            PlaylistModal modalWindow = new PlaylistModal();
+            modalWindow.ShowDialog();
+        }
+
+        private void ListViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            prepareSong(sender, e);
+        }
+
+        void ListView_MouseDoubleClick(Object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                prepareSong(sender, e);
+                mediaPlayer.Play();
+            }
+        }
+
+        private void btnPrevious_Click(object sender, RoutedEventArgs e)
+        {
+            PreviousSong();
+        }
+
+        private void btnPlay_Click(object sender, RoutedEventArgs e)
+        {
+            mediaPlayer.Play();
+
+        }
+
+        private void btnStop_Click(object sender, RoutedEventArgs e)
+        {
+            mediaPlayer.Pause(); // Have the pause method here as the functionality stops it, this is reversed with the pause button as the stop method pauses.
+        }
+
+        private void btnPause_Click(object sender, RoutedEventArgs e)
+        {
+            mediaPlayer.Stop();
+        }
+
+        private void btnShuffle_Click(object sender, RoutedEventArgs e)
+        {
+            ShuffleMusic();
         }
 
         private void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)

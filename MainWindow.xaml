@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="517" Width="999"
+        Title="MainWindow" Height="567" Width="999"
         WindowStartupLocation="CenterScreen">
-    <Grid Background="#353b48">
+    <Grid Background="#353b48" Margin="0,0,0,-1">
         <Grid.RowDefinitions>
             <RowDefinition Height="35*"/>
             <RowDefinition Height="61*"/>
         </Grid.RowDefinitions>
-        <TextBox Margin="248,10,10,136" Name="txtFilter" TextChanged="txtFilter_TextChanged"/>
-        <ListView Margin="248,44,10,105" Name="listViewData" SelectionChanged="listViewData_SelectionChanged" Grid.RowSpan="2">
+        <TextBox Margin="248,10,10,152" Name="txtFilter" TextChanged="txtFilter_TextChanged"/>
+        <ListView Margin="248,50,10,141" Name="listViewData" SelectionChanged="listViewData_SelectionChanged" Grid.RowSpan="2">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" Width="225" DisplayMemberBinding="{Binding Name}" />
@@ -28,15 +28,10 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="100" Margin="10,205,0,0" VerticalAlignment="Top" Width="971" Grid.Row="1"/>
-        <Label Name="lblStatusSongArtist" Content="Not playing..." HorizontalContentAlignment="Center" Margin="0,205,10,66" Foreground="#ffffff" Grid.Row="1"/>
-        <Button x:Name="PlayButton" Click="btnPlay_Click" Content="Play" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="415,275,0,0" Grid.Row="1"/>
-        <Button x:Name="PauseButton" Click="btnStop_Click" Content="Pause" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="495,275,0,0" Grid.Row="1"/>
-        <Button x:Name="PlayAllButton" Click="btnPlayAll_Click" Content="Play All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="815,275,0,0" Grid.Row="1"/>
-        <Button x:Name="ShuffleButton" Click="btnShuffle_Click" Content="Shuffle" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="895,275,0,0" Grid.Row="1"/>
-        <Button x:Name="SkipButton" Click="btnSkip_Click" Content="Skip" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="575,275,0,0" Grid.Row="1"/>
-        <Button x:Name="PreviousButton" Click="btnPrevious_Click" Content="Previous" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="335,275,0,0" Grid.Row="1"/>
-        <ListView HorizontalAlignment="Left" Name="listViewPlaylists" Height="342" VerticalAlignment="Top" Width="233" Margin="10,10,0,0" SelectionChanged="listViewPlaylists_SelectionChanged" Grid.RowSpan="2">
+        <Label Name="lblStatusSongArtist" Content="Not playing..." HorizontalContentAlignment="Center" Margin="0,298,0,10" Foreground="#ffffff" Grid.Row="1"/>
+        <Button x:Name="PlayAllButton" Click="btnPlayAll_Click" Content="Play All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="906,208,0,0" Grid.Row="1"/>
+        <Button x:Name="ShuffleButton" Click="btnShuffle_Click" Content="Shuffle" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="826,208,0,0" Grid.Row="1"/>
+        <ListView HorizontalAlignment="Left" Name="listViewPlaylists" Height="355" VerticalAlignment="Top" Width="233" Margin="10,10,0,0" SelectionChanged="listViewPlaylists_SelectionChanged" Grid.RowSpan="2">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Playlist Name" Width="233" DisplayMemberBinding="{Binding Name}" />
@@ -48,7 +43,40 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <Button x:Name="CreatePlaylistButton" Click="btnCreatePlaylist_Click" Content="Create Playlist" HorizontalAlignment="Left" VerticalAlignment="Top" Width="233" Margin="10,180,0,0" Grid.Row="1"/>
-        <Label x:Name="lblStatus" Content="0:00" HorizontalContentAlignment="Center" Margin="0,239,10,35" Foreground="#ffffff" Grid.Row="1"/>
+        <Button x:Name="CreatePlaylistButton" Click="btnCreatePlaylist_Click" Content="Create Playlist" HorizontalAlignment="Left" VerticalAlignment="Top" Width="233" Margin="10,173,0,0" Grid.Row="1" Height="30"/>
+        <Label x:Name="lblStatus" Content="0:00" HorizontalContentAlignment="Center" Margin="0,269,1,42" Foreground="#ffffff" Grid.Row="1" HorizontalAlignment="Right" Width="990" RenderTransformOrigin="0.5,0.5">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0.004"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+        <Grid Margin="305,208,306,70" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="19*"/>
+                <ColumnDefinition Width="46*"/>
+                <ColumnDefinition Width="11*"/>
+            </Grid.ColumnDefinitions>
+            <Button Click="btnPlay_Click" Margin="65,0,105,0" Background="Transparent"  BorderThickness="0" Grid.Column="1">
+                <Image Source="Assets/play.png" Height="51" Width="45" />
+            </Button>
+            <Button Click="btnStop_Click" Margin="145,0,25,0" Background="Transparent"  BorderThickness="0" Grid.Column="1">
+                <Image Source="Assets/pause.png" Height="51" Width="45" />
+            </Button>
+            <Button Click="btnPause_Click" Margin="80,0,185,0" Background="Transparent"  BorderThickness="0" Grid.ColumnSpan="2">
+                <Image Source="Assets/stop.png" Height="51" Width="45" />
+            </Button>
+            <Button Click="btnPrevious_Click" Margin="0,0,35,0" Background="Transparent"  BorderThickness="0">
+                <Image Source="Assets/back.png" Height="51" Width="45" />
+            </Button>
+            <Button Click="btnSkip_Click" Margin="225,0,0,0" Background="Transparent"  BorderThickness="0" Grid.ColumnSpan="2" Grid.Column="1">
+                <Image Source="Assets/skip.png" Height="51" Width="45" />
+            </Button>
+
+        </Grid>
+
     </Grid>
 </Window>

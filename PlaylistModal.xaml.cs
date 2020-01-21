@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 
 namespace MusicApp
 {
@@ -39,12 +41,14 @@ namespace MusicApp
 
             var newList = playlist.Concat(currentPlaylists);
 
-            mainWindow.listViewPlaylists.ItemsSource = newList;
-            mainWindow.listViewPlaylists.Items.Refresh();
-            System.Console.WriteLine(mainWindow.listViewPlaylists.ItemsSource);
 
-            //Console.WriteLine(playlist);
-            //mainWindow.listViewPlaylists.ItemsSource;
+
+            mainWindow.listViewPlaylists.ItemsSource = null;
+            mainWindow.listViewPlaylists.ItemsSource = newList;
+
+            System.ComponentModel.ICollectionView view = CollectionViewSource.GetDefaultView(mainWindow.listViewPlaylists.ItemsSource);
+            view.Refresh();
+
         }
     }
 }
