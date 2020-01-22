@@ -25,16 +25,14 @@ namespace MusicApp
             InitializeComponent();
             ReadFiles();
 
-
-
             var timer = new DispatcherTimer
             (
-            TimeSpan.FromSeconds(300), //TODO: Change this to 30 seconds
-            DispatcherPriority.ApplicationIdle,// Or DispatcherPriority.SystemIdle
-            (s, e) => { 
-                Idle();
-            }, // or something similar
-            Application.Current.Dispatcher
+                TimeSpan.FromSeconds(300), //TODO: Change this to 30 seconds
+                DispatcherPriority.ApplicationIdle,
+                (s, e) => { 
+                    Idle();
+                }, // or something similar
+                Application.Current.Dispatcher
             );
         }
 
@@ -59,12 +57,14 @@ namespace MusicApp
                 
             }
 
-            
-            //listViewData.ItemsSource = tracks;
+
+            listViewData.ItemsSource = tracks;
             CreateInitalPlaylist(tracks);
+
+
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(listViewData.ItemsSource);
-            //PropertyGroupDescription groupDescription = new PropertyGroupDescription("Name");
-            //view.Filter = UserFilter;
+            PropertyGroupDescription groupDescription = new PropertyGroupDescription("Name");
+            view.Filter = UserFilter;
             mediaPlayer.MediaEnded += (sender, eventArgs) => NextSong(); //TODO: Why is this here?
         }
 
@@ -78,59 +78,63 @@ namespace MusicApp
             });
             Playlists = playlist;
             listViewPlaylists.DataContext = this;
-
-
-
-            //List<Playlist> playlist = new List<Playlist>();
-            //listViewPlaylists.ItemsSource = playlist;
         }
 
         public void AddPlaylist()
         {
-            PlaylistModal playlistModal = new PlaylistModal();
             Playlists.Add(new Playlist()
             {
-                //Name = playlistModal.PlaylistName.Text,
                 Name = NewPlaylistName.Text,
                 Tracks = { },
             });
-            Console.WriteLine(playlistModal.PlaylistName.Text);
             listViewPlaylists.DataContext = this;
         }
 
-
-
-
-
-
         private void ListViewPlaylist_ItemClick(object sender, MouseButtonEventArgs e)
         {
-            Console.WriteLine(e);
-            Console.WriteLine(sender);
-            //var SelectedItem = sender.Content.tracks; //TODO: Fix this
+            //Method changes the playlist
+
             List<MusicTrack> tracks = new List<MusicTrack>();
-            foreach (var item in SelectedItem.Tracks)
+
+            var baseobj = sender as FrameworkElement;
+            var playlist = baseobj.DataContext as Playlist;
+
+            if (playlist.Tracks != null)
             {
-
-                //var tfile = TagLib.File.Create(file);
-                MusicTrack track = new MusicTrack();
-                tracks.Add(new MusicTrack()
+                foreach (var item in playlist.Tracks)
                 {
-                    Name = item.Name,
-                    Artists = item.Artists,
-                    Album = item.Album,
-                    FileLocation = item.FileLocation
-                });
+                    tracks.Add(new MusicTrack()
+                    {
+                        Name = item.Name,
+                        Artists = item.Artists,
+                        Album = item.Album,
+                        FileLocation = item.FileLocation
+                    });
 
-            }
+                }
                 listViewData.ItemsSource = tracks;
+            }
         }
 
+        void addToNewPlaylist(Object sender)
+        {
+            var baseobj = sender as FrameworkElement;
+            var musicTrack = baseobj.DataContext as MusicTrack;
 
+            //GET LAST ITEM IN ARRAY
+            var playlist = Playlists[Playlists.Count - 1];
+            if (playlist.Tracks == null)
+            {
+                playlist.Tracks = new List<MusicTrack>();
+            }
+            playlist.Tracks.Add(musicTrack);
+        }
 
-
-
-
+        void playSong()
+        {
+            mediaPlayer.Play();
+            showSongTimer();
+        }
         void Idle()
         {
             var darkwindow = new Window()
@@ -166,8 +170,7 @@ namespace MusicApp
             }
             var file = listViewData.SelectedItem as MusicTrack;
             mediaPlayer.Open(new Uri(file.FileLocation));
-            mediaPlayer.Play();
-            showSongTimer();
+            playSong();
         }
 
         void PlayAll()
@@ -181,8 +184,7 @@ namespace MusicApp
             listViewData.SelectedIndex = listViewData.SelectedIndex + 1;
             var file = listViewData.SelectedItem as MusicTrack;
             mediaPlayer.Open(new Uri(file.FileLocation));
-            mediaPlayer.Play();
-            showSongTimer();
+            playSong();
         }
 
         void PreviousSong()
@@ -190,8 +192,7 @@ namespace MusicApp
             listViewData.SelectedIndex = listViewData.SelectedIndex - 1;
             var file = listViewData.SelectedItem as MusicTrack;
             mediaPlayer.Open(new Uri(file.FileLocation));
-            mediaPlayer.Play();
-            showSongTimer();
+            playSong();
         }
 
         void prepareSong(object sender, MouseButtonEventArgs e)
@@ -199,7 +200,7 @@ namespace MusicApp
             var baseobj = sender as FrameworkElement;
             var musicTrack = baseobj.DataContext as MusicTrack;
             mediaPlayer.Open(new Uri(musicTrack.FileLocation));
-            showSongTimer();
+            
         }
 
         void showSongTimer()
@@ -217,10 +218,14 @@ namespace MusicApp
             {
                 if (mediaPlayer.NaturalDuration.HasTimeSpan)
                 {
-                    IdleModal idleModal = new IdleModal();
                     var track = listViewData.SelectedItem as MusicTrack;
-                    lblStatusSongArtist.Content = String.Format("{0} - {1}", track.Name, track.Album);
-                    lblStatus.Content = String.Format("{0} : {1}", mediaPlayer.Position.ToString(@"mm\:ss"), mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss"));
+
+                    if (track != null)
+                    {   
+                        lblStatusSongArtist.Content = String.Format("{0} - {1}", track.Name, track.Album);
+                        lblStatus.Content = String.Format("{0} : {1}", mediaPlayer.Position.ToString(@"mm\:ss"), mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss"));
+
+                    }
                 }
             }
             else
@@ -236,7 +241,9 @@ namespace MusicApp
 
         void ShuffleMusic()
         {
-            List<MusicTrack> tracks = listViewData.ItemsSource.Cast<MusicTrack>().ToList();
+            Playlist playlist = listViewPlaylists.SelectedItem as Playlist;
+            List<MusicTrack> tracks = playlist.Tracks;
+
             var shuffledTracks = tracks.OrderBy(a => Guid.NewGuid()).ToList();
             listViewData.ItemsSource = shuffledTracks;
         }
@@ -252,12 +259,10 @@ namespace MusicApp
 
 
 
-
-
-
-
-
-
+        void btnAddToPlaylist_Click(Object sender, RoutedEventArgs e)
+        {
+            addToNewPlaylist(sender);
+        }
 
         void ListViewPlaylist_MouseDoubleClick(Object sender, MouseButtonEventArgs e)
         {
@@ -289,7 +294,7 @@ namespace MusicApp
             if (e.ChangedButton == MouseButton.Left)
             {
                 prepareSong(sender, e);
-                mediaPlayer.Play();
+                playSong();
             }
         }
 
@@ -300,7 +305,7 @@ namespace MusicApp
 
         private void btnPlay_Click(object sender, RoutedEventArgs e)
         {
-            mediaPlayer.Play();
+            playSong();
 
         }
 
@@ -340,6 +345,11 @@ namespace MusicApp
         }
 
         private void NewPlaylistName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void TextBlock_SourceUpdated(object sender, DataTransferEventArgs e)
         {
 
         }

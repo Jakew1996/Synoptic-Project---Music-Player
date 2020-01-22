@@ -6,19 +6,31 @@
         xmlns:local="clr-namespace:MusicApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="672" Width="999"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
     <Grid Background="#353b48" Margin="0,0,0,-1">
         <Grid.RowDefinitions>
             <RowDefinition Height="35*"/>
             <RowDefinition Height="61*"/>
         </Grid.RowDefinitions>
         <TextBox Margin="248,27,10,184" Name="txtFilter" TextChanged="txtFilter_TextChanged"/>
+
+
+
         <ListView Margin="248,55,10,141" Name="listViewData" SelectionChanged="listViewData_SelectionChanged" Grid.RowSpan="2">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" Width="225" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Artist" Width="225" DisplayMemberBinding="{Binding Artists}" />
-                    <GridViewColumn Header="Album" Width="225" DisplayMemberBinding="{Binding Album}" />
+                    <GridViewColumn Header="Name" Width="180" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Artist" Width="180" DisplayMemberBinding="{Binding Artists}" />
+                    <GridViewColumn Header="Album" Width="180" DisplayMemberBinding="{Binding Album}" />
+                    <GridViewColumn Header="Test" Width="180">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Name="AddToPlaylist"  Click="btnAddToPlaylist_Click" Content="Add to new playlist" HorizontalContentAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
                 </GridView>
             </ListView.View>
             <ListView.ItemContainerStyle>
@@ -28,7 +40,6 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <Label Name="lblStatusSongArtist" HorizontalContentAlignment="Center" Margin="0,376,0,0" Foreground="#ffffff" Grid.Row="1"/>
         <Button x:Name="PlayAllButton" Click="btnPlayAll_Click" Content="Play All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="906,272,0,0" Grid.Row="1"/>
         <Button x:Name="ShuffleButton" Click="btnShuffle_Click" Content="Shuffle" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="826,272,0,0" Grid.Row="1"/>
         <ListView ItemsSource='{Binding Playlists}' HorizontalAlignment="Left" Name="listViewPlaylists" Height="411" VerticalAlignment="Top" Width="233" Margin="10,55,0,0" SelectionChanged="listViewPlaylists_SelectionChanged" Grid.RowSpan="2">
@@ -45,7 +56,7 @@
             </ListView.ItemContainerStyle>
         </ListView>
         <Button x:Name="CreatePlaylistButton" Click="btnCreatePlaylist_Click" Content="Create Playlist" HorizontalAlignment="Left" VerticalAlignment="Top" Width="233" Margin="10,237,0,0" Grid.Row="1" Height="30"/>
-        <Label x:Name="lblStatus" Content="0:00" HorizontalContentAlignment="Center" Margin="0,346,1,32" Foreground="#ffffff" Grid.Row="1" HorizontalAlignment="Right" Width="990" RenderTransformOrigin="0.5,0.5">
+        <Label x:Name="lblStatus" Content="0:00" HorizontalContentAlignment="Center" Margin="0,275,-2,104" Foreground="#ffffff" Grid.Row="1" HorizontalAlignment="Right" Width="995" RenderTransformOrigin="0.5,0.5">
             <Label.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -55,33 +66,33 @@
                 </TransformGroup>
             </Label.RenderTransform>
         </Label>
-        <Grid Margin="305,272,306,70" Grid.Row="1">
+        <Grid Margin="305,332,306,10" Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="19*"/>
-                <ColumnDefinition Width="46*"/>
-                <ColumnDefinition Width="11*"/>
+                <ColumnDefinition Width="96*"/>
+                <ColumnDefinition Width="44*"/>
+                <ColumnDefinition Width="187*"/>
+                <ColumnDefinition Width="55*"/>
             </Grid.ColumnDefinitions>
-            <Button Click="btnPlay_Click" Margin="65,0,105,0" Background="Transparent"  BorderThickness="0" Grid.Column="1">
+            <Button Click="btnPlay_Click" Margin="21,0,105,0" Background="Transparent"  BorderThickness="0" Grid.Column="2">
                 <Image Source="Assets/play.png" Height="51" Width="45" />
             </Button>
-            <Button Click="btnStop_Click" Margin="145,0,25,0" Background="Transparent"  BorderThickness="0" Grid.Column="1">
+            <Button Click="btnStop_Click" Margin="101,0,25,0" Background="Transparent"  BorderThickness="0" Grid.Column="2">
                 <Image Source="Assets/pause.png" Height="51" Width="45" />
             </Button>
-            <Button Click="btnPause_Click" Margin="80,0,185,0" Background="Transparent"  BorderThickness="0" Grid.ColumnSpan="2">
+            <Button Click="btnPause_Click" Margin="80,0,185,0" Background="Transparent"  BorderThickness="0" Grid.ColumnSpan="3">
                 <Image Source="Assets/stop.png" Height="51" Width="45" />
             </Button>
             <Button Click="btnPrevious_Click" Margin="0,0,35,0" Background="Transparent"  BorderThickness="0">
                 <Image Source="Assets/back.png" Height="51" Width="45" />
             </Button>
-            <Button Click="btnSkip_Click" Margin="225,0,0,0" Background="Transparent"  BorderThickness="0" Grid.ColumnSpan="2" Grid.Column="1">
+            <Button Click="btnSkip_Click" Margin="181,0,0,0" Background="Transparent"  BorderThickness="0" Grid.ColumnSpan="2" Grid.Column="2">
                 <Image Source="Assets/skip.png" Height="51" Width="45" />
             </Button>
 
         </Grid>
         <TextBox Name="NewPlaylistName" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="New Playlist name..." VerticalAlignment="Top" Width="233" Margin="10,27,0,0" TextChanged="NewPlaylistName_TextChanged"/>
         <Label Foreground="#ffffff" Content="New playlist name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0" Height="27"/>
-        <Label Foreground="#ffffff" Content="Search.." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="248,-5,0,0" Height="27"/>
-
-
+        <Label Foreground="#ffffff" Content="Search.." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="248,0,0,0" Height="27"/>
+        <Label x:Name="lblStatusSongArtist" Content="..." HorizontalContentAlignment="Center" Margin="0,301,0,77" Foreground="#ffffff" Grid.Row="1"/>
     </Grid>
 </Window>
