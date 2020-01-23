@@ -18,25 +18,30 @@ namespace MusicApp
     public partial class MainWindow : Window
     {
         public MediaPlayer mediaPlayer = new MediaPlayer();
+
+        PlayBackControls playBackControls = new PlayBackControls();
         public ObservableCollection<Playlist> Playlists { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            ReadFiles();
+            LoadMediaFiles();
 
             var timer = new DispatcherTimer
             (
-                TimeSpan.FromSeconds(300), //TODO: Change this to 30 seconds
+                TimeSpan.FromSeconds(30), //TODO: Store this variable somewhere else
                 DispatcherPriority.ApplicationIdle,
-                (s, e) => { 
+                (s, e) =>
+                {
                     Idle();
                 }, // or something similar
                 Application.Current.Dispatcher
             );
+
+            mediaPlayer.MediaEnded += (sender, eventArgs) => NextSong();
         }
 
-        public void ReadFiles()
+        public void LoadMediaFiles()
         {
 
             string folderPath = "C:\\Users\\Public\\Music"; //TODO: Store this variable somewhere else
@@ -54,33 +59,33 @@ namespace MusicApp
                     Album = tfile.Tag.Album,
                     FileLocation = file
                 });
-                
+
             }
 
-
-            listViewData.ItemsSource = tracks;
             CreateInitalPlaylist(tracks);
-
+            listViewData.ItemsSource = tracks;
 
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(listViewData.ItemsSource);
             PropertyGroupDescription groupDescription = new PropertyGroupDescription("Name");
             view.Filter = UserFilter;
-            mediaPlayer.MediaEnded += (sender, eventArgs) => NextSong(); //TODO: Why is this here?
         }
+
 
         void CreateInitalPlaylist(List<MusicTrack> Tracks)
         {
-            ObservableCollection<Playlist> playlist = new ObservableCollection<Playlist>();
-            playlist.Add(new Playlist()
+            ObservableCollection<Playlist> playlist = new ObservableCollection<Playlist>
             {
-                Name = "All Songs",
-                Tracks = Tracks,
-            });
+                new Playlist()
+                {
+                    Name = "All Songs",
+                    Tracks = Tracks,
+                }
+            };
             Playlists = playlist;
             listViewPlaylists.DataContext = this;
         }
 
-        public void AddPlaylist()
+        void CreatePlaylist()
         {
             Playlists.Add(new Playlist()
             {
@@ -90,10 +95,8 @@ namespace MusicApp
             listViewPlaylists.DataContext = this;
         }
 
-        private void ListViewPlaylist_ItemClick(object sender, MouseButtonEventArgs e)
+        void ChangePlaylist(object sender)
         {
-            //Method changes the playlist
-
             List<MusicTrack> tracks = new List<MusicTrack>();
 
             var baseobj = sender as FrameworkElement;
@@ -115,9 +118,11 @@ namespace MusicApp
                 listViewData.ItemsSource = tracks;
             }
         }
+        
 
-        void addToNewPlaylist(Object sender)
+        void AddToSongToPlaylist(Object sender)
         {
+            //Currently only adds to the most recently created playlist
             var baseobj = sender as FrameworkElement;
             var musicTrack = baseobj.DataContext as MusicTrack;
 
@@ -130,11 +135,7 @@ namespace MusicApp
             playlist.Tracks.Add(musicTrack);
         }
 
-        void playSong()
-        {
-            mediaPlayer.Play();
-            showSongTimer();
-        }
+        
         void Idle()
         {
             var darkwindow = new Window()
@@ -156,10 +157,16 @@ namespace MusicApp
             }
             else
             {
-                Idlemessage = "...";
+                Idlemessage = "Press 'ok' to wake";
             }
             MessageBox.Show(Idlemessage);
             darkwindow.Close();
+        }
+
+        public void PlaySong()
+        {
+            mediaPlayer.Play();
+            showSongTimer();
         }
 
         void AutoPlay()
@@ -170,7 +177,7 @@ namespace MusicApp
             }
             var file = listViewData.SelectedItem as MusicTrack;
             mediaPlayer.Open(new Uri(file.FileLocation));
-            playSong();
+            PlaySong();
         }
 
         void PlayAll()
@@ -184,7 +191,7 @@ namespace MusicApp
             listViewData.SelectedIndex = listViewData.SelectedIndex + 1;
             var file = listViewData.SelectedItem as MusicTrack;
             mediaPlayer.Open(new Uri(file.FileLocation));
-            playSong();
+            PlaySong();
         }
 
         void PreviousSong()
@@ -192,7 +199,7 @@ namespace MusicApp
             listViewData.SelectedIndex = listViewData.SelectedIndex - 1;
             var file = listViewData.SelectedItem as MusicTrack;
             mediaPlayer.Open(new Uri(file.FileLocation));
-            playSong();
+            PlaySong();
         }
 
         void prepareSong(object sender, MouseButtonEventArgs e)
@@ -200,10 +207,10 @@ namespace MusicApp
             var baseobj = sender as FrameworkElement;
             var musicTrack = baseobj.DataContext as MusicTrack;
             mediaPlayer.Open(new Uri(musicTrack.FileLocation));
-            
+
         }
 
-        void showSongTimer()
+        public void showSongTimer()
         {
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
@@ -211,7 +218,7 @@ namespace MusicApp
             timer.Start();
         }
 
-        
+
         void timer_Tick(object sender, EventArgs e)
         {
             if (mediaPlayer.Source != null)
@@ -221,7 +228,7 @@ namespace MusicApp
                     var track = listViewData.SelectedItem as MusicTrack;
 
                     if (track != null)
-                    {   
+                    {
                         lblStatusSongArtist.Content = String.Format("{0} - {1}", track.Name, track.Album);
                         lblStatus.Content = String.Format("{0} : {1}", mediaPlayer.Position.ToString(@"mm\:ss"), mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss"));
 
@@ -241,7 +248,12 @@ namespace MusicApp
 
         void ShuffleMusic()
         {
+            Console.WriteLine("test");
             Playlist playlist = listViewPlaylists.SelectedItem as Playlist;
+            if (listViewPlaylists.SelectedItem == null)
+            {
+                playlist = Playlists[0];
+            }
             List<MusicTrack> tracks = playlist.Tracks;
 
             var shuffledTracks = tracks.OrderBy(a => Guid.NewGuid()).ToList();
@@ -258,10 +270,15 @@ namespace MusicApp
 
 
 
+        private void ListViewPlaylist_ItemClick(object sender, MouseButtonEventArgs e)
+        {
+
+            ChangePlaylist(sender);
+        }
 
         void btnAddToPlaylist_Click(Object sender, RoutedEventArgs e)
         {
-            addToNewPlaylist(sender);
+            AddToSongToPlaylist(sender);
         }
 
         void ListViewPlaylist_MouseDoubleClick(Object sender, MouseButtonEventArgs e)
@@ -281,7 +298,7 @@ namespace MusicApp
 
         private void btnCreatePlaylist_Click(object sender, RoutedEventArgs e)
         {
-            AddPlaylist();
+            CreatePlaylist();
         }
 
         private void ListViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -294,7 +311,7 @@ namespace MusicApp
             if (e.ChangedButton == MouseButton.Left)
             {
                 prepareSong(sender, e);
-                playSong();
+                PlaySong();
             }
         }
 
@@ -305,7 +322,7 @@ namespace MusicApp
 
         private void btnPlay_Click(object sender, RoutedEventArgs e)
         {
-            playSong();
+            PlaySong();
 
         }
 
@@ -341,7 +358,7 @@ namespace MusicApp
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private void NewPlaylistName_TextChanged(object sender, TextChangedEventArgs e)

@@ -32,7 +32,23 @@ C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\MusicApp.csproj.G
 C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\MusicApp.csproj.CopyComplete
 C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\MusicApp.exe
 C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\MusicApp.pdb
-C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\PlaylistModal.g.cs
-C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\PlaylistModal.baml
 C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\IdleModal.g.cs
 C:\Users\withersj\QA\Synoptic-Project---Music-Player\obj\Debug\IdleModal.baml
+C:\Users\withersj\QA\Old music player\obj\Debug\MusicApp.csprojAssemblyReference.cache
+C:\Users\withersj\QA\Old music player\obj\Debug\IdleModal.g.cs
+C:\Users\withersj\QA\Old music player\obj\Debug\MainWindow.g.cs
+C:\Users\withersj\QA\Old music player\obj\Debug\App.g.cs
+C:\Users\withersj\QA\Old music player\obj\Debug\MusicApp_MarkupCompile.cache
+C:\Users\withersj\QA\Old music player\obj\Debug\MusicApp_MarkupCompile.lref
+C:\Users\withersj\QA\Old music player\obj\Debug\MusicApp.exe
+C:\Users\withersj\QA\Old music player\obj\Debug\MusicApp.pdb
+C:\Users\withersj\QA\Old music player\bin\Debug\MusicApp.exe.config
+C:\Users\withersj\QA\Old music player\bin\Debug\MusicApp.exe
+C:\Users\withersj\QA\Old music player\bin\Debug\MusicApp.pdb
+C:\Users\withersj\QA\Old music player\bin\Debug\policy.2.0.taglib-sharp.config
+C:\Users\withersj\QA\Old music player\obj\Debug\IdleModal.baml
+C:\Users\withersj\QA\Old music player\obj\Debug\MainWindow.baml
+C:\Users\withersj\QA\Old music player\obj\Debug\MusicApp.g.resources
+C:\Users\withersj\QA\Old music player\obj\Debug\MusicApp.Properties.Resources.resources
+C:\Users\withersj\QA\Old music player\obj\Debug\MusicApp.csproj.GenerateResource.cache
+C:\Users\withersj\QA\Old music player\obj\Debug\MusicApp.csproj.CopyComplete
